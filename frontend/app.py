@@ -20,7 +20,7 @@ with st.expander("Don't have an account? Register here"):
         if new_username and new_password:
             res = requests.post(
                 f"{API_URL}/users/register",
-                json={"username": new_username, "password": new_password}
+                json={"username": new_username, "password": new_password}, timeout=5
             )
             if res.ok:
                 st.success("Registered successfully! You can now log in.")
@@ -38,7 +38,7 @@ if st.button("Login"):
     if username and password:
         res = requests.post(
             f"{API_URL}/users/login",
-            json={"username": username, "password": password}
+            json={"username": username, "password": password}, timeout=5
         )
         if res.ok:
             token = res.json()["access_token"]
