@@ -18,4 +18,4 @@ jobs:
     - name: Install dependencies
       run: poetry install
     - name: Run Bandit Security
-      run: bandit -r .
+      run: poetry run bandit -r .
