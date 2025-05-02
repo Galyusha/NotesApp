@@ -8,16 +8,13 @@ from app.db import SessionLocal
 
 router = APIRouter(prefix="/notes", tags=["notes"])
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+async def get_db():
+    async with SessionLocal() as session:
+        yield session
 
 @router.post("/", response_model=NoteOut)
 async def create_note(note: NoteCreate, db: AsyncSession = Depends(get_db)):
-    new_note = Note(**note.dict(), owner_id=1)
+    new_note = Note(**note.model_dump(), owner_id=1)
     db.add(new_note)
     await db.commit()
     await db.refresh(new_note)
