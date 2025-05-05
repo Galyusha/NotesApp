@@ -17,5 +17,7 @@ jobs:
       run: pip install poetry
     - name: Install dependencies
       run: poetry install
+    - name: Run Flake8
+      run: poetry run flake8 .
     - name: Run Bandit Security
       run: poetry run bandit -r .

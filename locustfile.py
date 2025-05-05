@@ -25,7 +25,7 @@ class NotesAppUser(HttpUser):
 
         if response.status_code not in [200, 400]:
             response.failure(
-                f"Registration failed with status code: {response.status_code}")
+                f"Registration failed with status code:{response.status_code}")
 
     def login(self):
         response = self.client.post(
@@ -99,7 +99,11 @@ class NotesAppUser(HttpUser):
             return
 
         headers = {"Authorization": f"Bearer {self.token}"}
-        note_id = self.created_note_ids.pop() if self.created_note_ids else None
+        note_id = (
+            self.created_note_ids.pop()
+            if self.created_note_ids
+            else None
+        )
 
         if note_id:
             self.client.delete(

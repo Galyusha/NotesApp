@@ -1,9 +1,11 @@
 import streamlit as st
 import requests
 
+
 API_URL = "http://localhost:8000"
 
-st.set_page_config(page_title="Simple Notes App", page_icon="📝")
+st.set_page_config(page_title="Simple Notes App",
+                   page_icon="📝")
 
 st.title("📝 Simple Notes App")
 
@@ -17,12 +19,14 @@ if "username" not in st.session_state:
 # --- REGISTRATION SECTION ---
 with st.expander("Don't have an account? Register here"):
     new_username = st.text_input("New Username", key="register_username")
-    new_password = st.text_input("New Password", type="password", key="register_password")
+    new_password = st.text_input("New Password", type="password",
+                                 key="register_password")
     if st.button("Register"):
         if new_username and new_password:
             res = requests.post(
                 f"{API_URL}/users/register",
-                json={"username": new_username, "password": new_password}
+                json={"username": new_username,
+                      "password": new_password}
             )
             if res.ok:
                 st.success("Registered successfully! You can now log in.")
@@ -35,7 +39,8 @@ with st.expander("Don't have an account? Register here"):
 # --- LOGIN SECTION ---
 st.subheader("Login")
 username = st.text_input("Username", key="login_username")
-password = st.text_input("Password", type="password", key="login_password")
+password = st.text_input("Password", type="password",
+                         key="login_password")
 
 if st.button("Login"):
     if username and password:
@@ -72,7 +77,9 @@ if st.session_state.token:
 
     if st.button("Add Note"):
         headers = {"Authorization": f"Bearer {st.session_state.token}"}
-        res = requests.post(f"{API_URL}/notes/", json={"title": title, "content": content}, headers=headers)
+        res = requests.post(f"{API_URL}/notes/",
+                            json={"title": title,
+                                  "content": content}, headers=headers)
         if res.ok:
             st.success("Note added!")
         else:
@@ -88,15 +95,18 @@ if st.session_state.token:
             st.markdown("---")
             st.markdown(f"### ✏️ {note['title']}")
             st.write(note["content"])
-            
-            if st.button("Translate to English", key=f"translate_{note['id']}"):
-                headers = {"Authorization": f"Bearer {st.session_state.token}"}
+
+            if st.button("Translate to English",
+                         key=f"translate_{note['id']}"):
+                headers = {"Authorization":
+                           f"Bearer {st.session_state.token}"}
                 translation_res = requests.post(
                     f"{API_URL}/notes/translate",
-                    json={"text": note["content"], "source_lang": "ru", "target_lang": "en"},
+                    json={"text": note["content"],
+                          "source_lang": "ru", "target_lang": "en"},
                     headers=headers
                 )
-                
+
                 if translation_res.ok:
                     translation = translation_res.json()
                     st.success("Translation successful!")
@@ -105,16 +115,21 @@ if st.session_state.token:
                 else:
                     st.error("Translation failed. Please try again.")
                     if translation_res.status_code == 401:
-                        st.warning("API key may be missing or invalid. Please check your API configuration.")
+                        st.warning(
+                            "API key may be missing or invalid. "
+                            "Please check your API configuration.")
                     else:
                         st.warning(f"Error: {translation_res.text}")
-
 
             note_key = f"note_{note['id']}"
 
             with st.expander("Edit this note", expanded=False):
-                new_title = st.text_input("Updated Title", value=note["title"], key=f"title_{note_key}")
-                new_content = st.text_area("Updated Content", value=note["content"], key=f"content_{note_key}")
+                new_title = st.text_input("Updated Title",
+                                          value=note["title"],
+                                          key=f"title_{note_key}")
+                new_content = st.text_area("Updated Content",
+                                           value=note["content"],
+                                           key=f"content_{note_key}")
 
                 if st.button("Update Note", key=f"update_{note_key}"):
                     res = requests.put(
@@ -128,11 +143,12 @@ if st.session_state.token:
                         st.error("Failed to update note.")
 
                 if st.button("Delete Note", key=f"delete_{note_key}"):
-                    res = requests.delete(f"{API_URL}/notes/{note['id']}", headers=headers)
+                    res = requests.delete(f"{API_URL}/notes/{note['id']}",
+                                          headers=headers)
                     if res.ok:
-                        st.success("Note deleted! Refresh to remove from view.")
+                        st.success("Note deleted! "
+                                   "Refresh to remove from view.")
                     else:
                         st.error("Failed to delete note.")
     else:
         st.error("Failed to fetch notes.")
-

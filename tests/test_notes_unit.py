@@ -1,7 +1,9 @@
 import pytest
 from unittest.mock import AsyncMock, patch, MagicMock
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.routers.notes import create_note, read_notes, update_note, delete_note, translate_note_text
+from app.routers.notes import (
+    create_note, read_notes, update_note,
+    delete_note, translate_note_text)
 from app.models.note import Note
 from app.schemas.note import NoteCreate, TranslationRequest
 from fastapi import HTTPException
@@ -50,7 +52,7 @@ async def test_update_note_success():
 
     note_data = NoteCreate(title="Updated Title", content="Updated Content")
 
-    result = await update_note(note_id=1, updated_note=note_data, db=mock_db)
+    await update_note(note_id=1, updated_note=note_data, db=mock_db)
 
     mock_db.execute.assert_called_once()
     assert mock_note.title == "Updated Title"
@@ -63,7 +65,7 @@ async def test_update_note_success():
 async def test_update_note_not_found():
     mock_db = AsyncMock(spec=AsyncSession)
     mock_result = MagicMock()
-    mock_result.scalars.return_value.first.return_value = None  # Note not found
+    mock_result.scalars.return_value.first.return_value = None
     mock_db.execute.return_value = mock_result
 
     note_data = NoteCreate(title="Updated Title", content="Updated Content")
@@ -96,7 +98,7 @@ async def test_delete_note_success():
 async def test_delete_note_not_found():
     mock_db = AsyncMock(spec=AsyncSession)
     mock_result = MagicMock()
-    mock_result.scalars.return_value.first.return_value = None  # Note not found
+    mock_result.scalars.return_value.first.return_value = None
     mock_db.execute.return_value = mock_result
 
     with pytest.raises(HTTPException) as exc_info:
@@ -116,8 +118,10 @@ async def test_translate_note_text():
         target_lang="en"
     )
 
-    with patch("app.routers.notes.translate_text", return_value="Hello world") as mock_translate:
-        result = await translate_note_text(translation_request=translation_request)
+    with patch("app.routers.notes.translate_text",
+               return_value="Hello world") as mock_translate:
+        result = await translate_note_text(
+            translation_request=translation_request)
 
     mock_translate.assert_called_once_with(
         text="Привет мир",

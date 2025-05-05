@@ -2,7 +2,8 @@ import aiohttp
 import os
 
 
-async def translate_text(text: str, source_lang: str = "ru", target_lang: str = "en") -> str:
+async def translate_text(text: str, source_lang: str = "ru",
+                         target_lang: str = "en") -> str:
     if not text:
         return ""
 
@@ -22,7 +23,8 @@ async def translate_text(text: str, source_lang: str = "ru", target_lang: str = 
 
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=payload, headers=headers) as response:
+            async with session.post(url, json=payload,
+                                    headers=headers) as response:
                 if response.status == 200:
                     result = await response.json()
                     return result["data"]["translations"]["translatedText"][0]

@@ -17,7 +17,8 @@ async def test_register_success():
 
     user_data = UserCreate(username="testuser", password="password123")
 
-    with patch("app.routers.users.get_password_hash", return_value="hashed_password"):
+    with patch("app.routers.users.get_password_hash",
+               return_value="hashed_password"):
         result = await register(user=user_data, db=mock_db)
 
     mock_db.add.assert_called_once()
@@ -59,8 +60,10 @@ async def test_login_success():
 
     user_data = UserCreate(username="testuser", password="password123")
 
-    with patch("app.routers.users.verify_password", return_value=True) as mock_verify:
-        with patch("app.routers.users.create_access_token", return_value="test_token") as mock_create_token:
+    with patch("app.routers.users.verify_password",
+               return_value=True) as mock_verify:
+        with patch("app.routers.users.create_access_token",
+                   return_value="test_token") as mock_create_token:
             result = await login(user=user_data, db=mock_db)
 
     mock_verify.assert_called_once_with("password123", "hashed_password")
@@ -96,7 +99,8 @@ async def test_login_incorrect_password():
 
     user_data = UserCreate(username="testuser", password="wrong_password")
 
-    with patch("app.routers.users.verify_password", return_value=False) as mock_verify:
+    with patch("app.routers.users.verify_password",
+               return_value=False) as mock_verify:
         with pytest.raises(HTTPException) as exc_info:
             await login(user=user_data, db=mock_db)
 

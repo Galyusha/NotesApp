@@ -9,12 +9,14 @@ import httpx
 from app.main import app
 from app.db import Base
 from app.routers.users import get_db
-from app.models import user
+
 
 DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
-engine = create_async_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-TestingSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+engine = create_async_engine(DATABASE_URL,
+                             connect_args={"check_same_thread": False})
+TestingSessionLocal = sessionmaker(bind=engine,
+                                   class_=AsyncSession, expire_on_commit=False)
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
@@ -32,17 +34,21 @@ async def override_get_db():
 
 app.dependency_overrides[get_db] = override_get_db
 
+
 @pytest.fixture
 def client():
     from app.main import app
     with TestClient(app) as client:
         yield client
 
+
 @pytest_asyncio.fixture
 async def async_client(test_db):
     app.dependency_overrides[get_db] = override_get_db
-    async with AsyncClient(base_url="http://test", transport=httpx.ASGITransport(app=app)) as ac:
+    async with AsyncClient(base_url="http://test",
+                           transport=httpx.ASGITransport(app=app)) as ac:
         yield ac
+
 
 @pytest.fixture
 def test_note_data():
