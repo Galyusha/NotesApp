@@ -8,7 +8,7 @@ async def lifespan(app: FastAPI):
     await init_db()
     yield
 
-app = FastAPI(title="Simple Notes App")
+app = FastAPI(title="Simple Notes App", lifespan=lifespan)
 
 app.include_router(users.router)
 app.include_router(notes.router)
