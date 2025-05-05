@@ -33,6 +33,7 @@ dependencies = [
     "pytest-trio (>=0.8.0,<0.9.0)",
     "twisted (>=24.11.0,<25.0.0)",
     "greenlet (>=3.2.1,<4.0.0)",
+    "aiohttp (>=3.11.18,<4.0.0)",
 ]
 
 

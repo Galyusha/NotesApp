@@ -88,6 +88,27 @@ if st.session_state.token:
             st.markdown("---")
             st.markdown(f"### ✏️ {note['title']}")
             st.write(note["content"])
+            
+            if st.button("Translate to English", key=f"translate_{note['id']}"):
+                headers = {"Authorization": f"Bearer {st.session_state.token}"}
+                translation_res = requests.post(
+                    f"{API_URL}/notes/translate",
+                    json={"text": note["content"], "source_lang": "ru", "target_lang": "en"},
+                    headers=headers
+                )
+                
+                if translation_res.ok:
+                    translation = translation_res.json()
+                    st.success("Translation successful!")
+                    st.markdown("**English Translation:**")
+                    st.write(translation["translated_text"])
+                else:
+                    st.error("Translation failed. Please try again.")
+                    if translation_res.status_code == 401:
+                        st.warning("API key may be missing or invalid. Please check your API configuration.")
+                    else:
+                        st.warning(f"Error: {translation_res.text}")
+
 
             note_key = f"note_{note['id']}"
 
